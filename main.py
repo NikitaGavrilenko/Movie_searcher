@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import telebot
 import os
 
-
+# Получаем ключи
 load_dotenv()
 TOKEN = os.getenv('TOKEN')
 bot = telebot.TeleBot(TOKEN)
@@ -40,32 +40,31 @@ def start_message(message):
 
 
 @bot.message_handler(content_types=["text"])
-def repeat_all_messages(message):  # Название функции не играет никакой роли
-    # Подготовка входных данных
-    inputs = {
+def repeat_all_messages(message):
+    # Подготовка входных данных для поиска ключевых слов
+    inputs_k = {
         "question": message.text
     }
 
-    # Запуск цепочки
-    response = chain_keys.invoke(inputs)  # Передаем входные данные в цепочку
-    # Отправляем ответ пользователю
+    # Запуск цепочки с ключевыми словами
+    response = chain_keys.invoke(inputs_k)
 
 
     # Извлечение документов из retriever
-    docs = retriever.get_relevant_documents(response.content)  # поищите документы, связанные с вопросом
+    docs = retriever.get_relevant_documents(response.content)
     context = format_docs(docs)  # формируем контекст из документов
 
-    # Подготовка входных данных
+    # Подготовка входных данных для ответа, добавления контекста
     inputs = {
         "context": context,
         "question": message.text
     }
 
-    # Запуск цепочки
-    response = chain.invoke(inputs)  # Передаем входные данные в цепочку
+    # Запуск основной цепочки
+    response = chain.invoke(inputs)
+
     # Отправляем ответ пользователю
     bot.send_message(message.chat.id, response.content)
 
 
 bot.polling(none_stop=True)
-# Цикл

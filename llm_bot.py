@@ -4,13 +4,13 @@ from langchain_core.runnables import RunnableSequence
 from dotenv import load_dotenv
 import os
 
+# Получаем ключи
 load_dotenv()
 PROXY_API_KEY = os.getenv('PROXY_API_KEY')
 def format_docs(docs):
     return "\n\n".join([d.page_content for d in docs])
 
 
-# llm от OpenAI
 llm = ChatOpenAI(
     model="gpt-4o",
     temperature=0,
