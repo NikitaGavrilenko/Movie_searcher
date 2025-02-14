@@ -1,0 +1,4 @@
+.env
+data/
+faiss_db_full/
+venv/
